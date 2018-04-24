@@ -106,3 +106,27 @@ CREATE TABLE lancamentos(
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
+
+-- Alterações realizadas para troda do id na tabela pessoas para cpf
+
+alter table contatos drop foreign key fk_contatos_pessoa;
+alter table enderecos drop foreign key fk_endereco_pessoas1;
+alter table lancamentos drop foreign key fk_lancamento_pessoa1;
+alter table pessoas add column pessoa_cpf varchar(20) not null;
+update pessoas set pessoa_cpf = '12345678910' where id = 1;
+update pessoas set pessoa_cpf = '98765432111' where id = 2;
+alter table pessoas modify column id bigint unique ;
+alter table pessoas drop primary key;
+alter table pessoas add primary key (pessoa_cpf);
+alter table contatos add column pessoa_cpf varchar(20);
+alter table contatos modify column id bigint unique auto_increment;
+alter table contatos drop primary key;
+alter table contatos add primary key(id);
+update contatos c inner join pessoas p on c.pessoa_id = p.id set c.pessoa_cpf = p.pessoa_cpf;
+alter table contatos add constraint pessoa3_cpf_fk foreign key (pessoa_cpf) references pessoas (pessoa_cpf);
+alter table lancamentos add column pessoa_cpf varchar(20);
+update lancamentos l inner join pessoas p on l.pessoa_id = p.id set l.pessoa_cpf = p.pessoa_cpf;
+alter table lancamentos add constraint pessoa1_cpf_fk foreign key (pessoa_cpf) references pessoas (pessoa_cpf);
+alter table enderecos add column pessoa2_cpf varchar(20);
+update enderecos e inner join pessoas p on e.pessoa_id = p.id set e.pessoa2_cpf = p.pessoa_cpf;
+alter table enderecos add constraint pessoa2_cpf_fk foreign key (pessoa2_cpf) references pessoas (pessoa_cpf);
